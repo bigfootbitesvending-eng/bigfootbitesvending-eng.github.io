@@ -1,0 +1,54 @@
+/* ============================================================
+   Bigfoot Bites — Shared Design Tokens
+   Used across all operator tool pages (basement inventory, pick
+   list, tax obligations, report contacts, monthly reports, hub).
+   Component-level CSS (buttons, cards, badges, layout) stays local
+   to each page and references these tokens via var(--token-name)
+   rather than duplicating literal values, so a palette or font
+   change is a one-file edit instead of a per-page hunt.
+   ============================================================ */
+
+:root {
+  /* Base palette */
+  --paper: #F3F4F1;
+  --ink: #1C2321;
+  --ink-soft: #52605B;
+  --rule: #D7D9D3;
+
+  /* Accent */
+  --ledger-green: #2F6F5E;
+  --ledger-green-soft: #E4EEEA;
+
+  /* Status (shared because status badges are a reusable pattern —
+     report status today, plausibly order/procurement status later) */
+  --status-not-started: #B8B2A5;
+  --status-draft: #C98A2C;
+  --status-sent: #2F6F5E;
+  --status-error: #B23B3B;
+  --status-error-soft: #FBEAEA;
+
+  /* Typography */
+  --font-display: 'Roboto Slab', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
