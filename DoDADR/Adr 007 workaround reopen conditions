@@ -1,0 +1,60 @@
+# ADR: Workaround ADRs need an enforced re-check trigger, not just a stated one
+
+**Status:** Accepted
+**Date:** 2026-09-08
+**Renumber to fit the existing `/docs/adr-NNN-*.md` sequence before committing.**
+
+## Context
+
+adr-004 (2026-09-03) accepted a workaround and explicitly recommended
+root-causing "before a second consumer of transaction_time is built." HAHA
+Sales Ingestion became that second consumer on 2026-09-07. Nobody reopened
+adr-004 when it happened. It took a production incident four days later,
+and an explicit instruction in this session's kickoff brief to check, for
+the condition to actually get evaluated.
+
+The stated condition was correct. It just had no mechanism forcing anyone
+to check it at the moment it became true.
+
+This is the same shape of failure as adr-001 (a transplanted pattern's
+precondition not re-derived at the destination) and adr-003 (a resilience
+fix in one flow not checked against its siblings), just at the level of
+ADR governance instead of workflow wiring. A written condition that
+depends on someone remembering to check it is not different in kind from
+a named node reference that depends on someone remembering it might not
+have executed.
+
+## Decision
+
+Any ADR accepted with Status "Accepted (workaround)" — a decision that
+names a condition under which it should be reopened — gets that condition
+logged as a standing item in the DoD sweep, not left as prose inside the
+ADR alone. When a build session's DoD sweep touches a system the condition
+references, checking whether the condition has fired is part of the sweep,
+not optional.
+
+This does not require tooling. It requires the condition to be checked in
+the same place the rest of the DoD sweep already gets checked, alongside
+locked business rules and cross-flow propagation.
+
+## Consequences
+
+**Positive:**
+- Converts "someone should remember to reopen this" into a routine check,
+  the same fix already applied to fix propagation in adr-003.
+- Costs nothing to add — the DoD sweep already exists and already reads
+  ADRs for locked rules.
+
+**Negative:**
+- Only as good as the DoD sweep actually running. If the sweep gets
+  skipped, so does this — same limitation adr-003 already accepted for
+  its own check.
+- Adds one more thing to hold in mind during every sweep, on a list that
+  already has several.
+
+## Related
+
+- Prompted directly by adr-006 (root-cause transaction_time), whose
+  triggering condition sat unchecked for five days.
+- Same class of failure as adr-001 (unre-derived precondition) and
+  adr-003 (unpropagated fix), generalized to ADR governance itself.
