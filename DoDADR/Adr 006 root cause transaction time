@@ -1,0 +1,79 @@
+# ADR: Root-cause sales_transactions.transaction_time — convert legacy write paths to true UTC
+
+**Status:** Accepted — implementation not yet started
+**Date:** 2026-09-08
+**Supersedes/amends:** adr-004-sales-transactions-time-labeling.md
+**Renumber to fit the existing `/docs/adr-NNN-*.md` sequence before committing.**
+
+## Context
+
+adr-004 documented three write paths into `sales_transactions.transaction_time`,
+all pushing timezone-naive Central strings that Postgres silently mislabels
+as UTC, with a reader-side workaround (`transaction_time AT TIME ZONE 'UTC'`)
+that undoes the mislabeling. It recommended root-causing "before a second
+consumer of transaction_time is built."
+
+HAHA Sales Ingestion is a fourth write path, confirmed live via execution
+26329 (2026-09-05, Spry). HAHA's `saleDtm` is RFC3339 with an explicit
+offset (`2026-09-04T10:59:17-05:00`). That string casts to genuine UTC at
+insert time — the opposite convention from the other three. The shared
+reader's `AT TIME ZONE 'UTC'` correction, applied to a HAHA row, takes an
+already-correct value and reintroduces a 5-6 hour shift.
+
+adr-004's forcing condition — a second consumer — was met on 2026-09-07
+without the ADR being reopened. See the companion ADR on that gap.
+
+## Decision
+
+Root-cause per adr-004's original recommendation:
+
+1. Convert the three legacy write paths (ADM Sales Transactions Backfill
+   One-Shot, AV Live Sales Transactions Backfill One-Shot, AV Live Daily
+   Restocking Orchestrator) to write true UTC at insert time, converting
+   from Central at the point each builds its row.
+2. Update Generate Time of Day Section's query from
+   `AT TIME ZONE 'UTC'` to `AT TIME ZONE 'America/Chicago'` in the same
+   change. These two moves ship together or the fix silently reintroduces
+   the bug in reverse — this was already adr-004's condition and still
+   holds.
+3. HAHA Sales Ingestion's write path is unchanged. It already produces
+   true UTC.
+
+## Open sub-decision — historical backfill
+
+adr-004 stated historical rows don't need backfilling, but that statement
+was scoped to the `date` column, which other consumers read and which is
+unaffected either way. It was not scoped to `transaction_time` itself.
+
+For Generate Time of Day Section specifically, an un-backfilled cutover
+means pre-fix ADM/AV Live rows keep the old (mislabeled) convention while
+post-fix rows carry true UTC, and one query cannot correctly read both.
+Two options, undecided:
+
+- **Backfill.** Convert existing ADM/AV Live `transaction_time` values to
+  true UTC in the same pass as the write-path fix. Report is correct for
+  all history immediately. Requires a one-time migration script.
+- **No backfill.** Accept that Time of Day report accuracy only holds for
+  rows written after the cutover date. Simpler, but silently degrades
+  historical accuracy with no flag anywhere that it happened.
+
+## Consequences
+
+**Positive:**
+- One convention for the column going forward. Correctness stops
+  depending on institutional memory of this ADR.
+- HAHA requires no change — it was already right.
+
+**Negative:**
+- Touches three live write paths plus the one reader in a coordinated
+  pass. Per this project's DoD Phase 2, each is "done" only once an
+  execution exercising the changed path has been inspected — four
+  separate verifications, not one.
+- Backfill sub-decision is unresolved; whichever way it goes needs to be
+  stated, not inferred.
+
+## Related
+
+- Amends adr-004-sales-transactions-time-labeling.md.
+- See companion ADR on workaround re-open conditions, which covers why
+  this took five days longer to surface than it should have.
