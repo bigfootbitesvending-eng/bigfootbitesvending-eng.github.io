@@ -3,147 +3,406 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bigfoot Bites — Operator Tools</title>
+<title>Reorder Coverage — Bigfoot Bites</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500;700&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shared/styles.css">
 <style>
+  /* Page-specific component styles. Colors/fonts reference the shared
+     tokens from /shared/styles.css rather than redefining a palette. */
   :root {
-    --paper: #F3F4F1;
-    --ink: #1C2321;
-    --ink-soft: #52605B;
-    --rule: #D7D9D3;
-    --ledger-green: #2F6F5E;
-    --ledger-green-soft: #E4EEEA;
+    --danger: #B3492D;
+    --danger-soft: #F5E4DE;
   }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
+
   main {
-    max-width: 640px;
+    max-width: 820px;
     margin: 0 auto;
-    padding: 3rem 1.25rem 4rem;
+    padding: 2.5rem 1.25rem 5rem;
   }
+
   header {
-    margin-bottom: 2rem;
+    max-width: 820px;
+    margin: 0 auto 2rem;
+    padding: 0 1.25rem 1rem;
     border-bottom: 2px solid var(--ink);
-    padding-bottom: 1rem;
   }
+
   h1 {
-    font-family: 'Roboto Slab', serif;
-    font-weight: 700;
     font-size: 1.6rem;
-    margin: 0 0 0.25rem;
-    letter-spacing: -0.01em;
+    margin-bottom: 0.25rem;
   }
-  .subtitle { color: var(--ink-soft); font-size: 0.9rem; }
-  section.category {
-    margin-bottom: 2rem;
-  }
-  section.category:last-of-type {
-    margin-bottom: 0;
-  }
-  h2.category-title {
-    font-family: 'Roboto Slab', serif;
-    font-weight: 700;
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+
+  .subtitle {
     color: var(--ink-soft);
-    margin: 0 0 0.75rem;
-    padding-bottom: 0.4rem;
-    border-bottom: 1px solid var(--rule);
+    font-size: 0.9rem;
   }
-  .tools { display: flex; flex-direction: column; gap: 0.9rem; }
-  a.tool-card {
-    display: block;
+
+  .panel {
     background: #fff;
     border: 1px solid var(--rule);
-    border-left: 4px solid var(--ledger-green);
     border-radius: 6px;
-    padding: 1.1rem 1.25rem;
-    text-decoration: none;
+    margin-bottom: 1.5rem;
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem 1.1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .panel-header h2 {
+    font-size: 1rem;
+  }
+
+  #search {
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: #fff;
     color: var(--ink);
-    transition: background 0.15s ease;
+    width: 220px;
+    max-width: 45vw;
   }
-  a.tool-card:hover { background: var(--ledger-green-soft); }
-  a.tool-card:focus-visible { outline: 2px solid var(--ledger-green); outline-offset: 2px; }
-  .tool-name {
-    font-family: 'Roboto Slab', serif;
-    font-weight: 700;
-    font-size: 1.05rem;
+  #search:focus {
+    outline: 2px solid var(--ledger-green);
+    outline-offset: 1px;
+  }
+
+  button {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    padding: 0.4rem 0.75rem;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+  }
+  button:hover { opacity: 0.85; }
+  button:focus-visible {
+    outline: 2px solid var(--ledger-green);
+    outline-offset: 2px;
+  }
+
+  .btn-primary { background: var(--ledger-green); color: #fff; }
+  .btn-quiet { background: transparent; color: var(--ink-soft); border-color: var(--rule); }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead th {
+    text-align: left;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  th.num, td.num { text-align: right; }
+
+  tbody td {
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid var(--rule);
+    font-size: 0.9rem;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr.editing { background: var(--ledger-green-soft); }
+
+  .coverage-value {
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .coverage-input {
+    width: 70px;
+    font-family: 'IBM Plex Mono', monospace;
+    text-align: right;
+    font-size: 0.9rem;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+  }
+  .coverage-input:focus {
+    outline: 2px solid var(--ledger-green);
+    outline-offset: 1px;
+  }
+  .coverage-input.invalid {
+    border-color: var(--danger);
+  }
+
+  td.actions {
+    text-align: right;
+    white-space: nowrap;
+  }
+  td.actions button + button { margin-left: 0.4rem; }
+
+  .row-error {
+    color: var(--danger);
+    font-size: 0.78rem;
+    margin-top: 0.3rem;
+    display: block;
+  }
+
+  .empty-state {
+    padding: 2.5rem 1.1rem;
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+  }
+  .empty-state strong {
+    display: block;
+    color: var(--ink);
     margin-bottom: 0.3rem;
+    font-size: 0.95rem;
   }
-  .tool-desc { font-size: 0.88rem; color: var(--ink-soft); }
+
+  #status-line {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    min-height: 1.2em;
+  }
+  #status-line.error { color: var(--danger); }
+
+  @media (max-width: 640px) {
+    thead { display: none; }
+    tbody tr { display: block; border-bottom: 2px solid var(--rule); }
+    tbody td { display: flex; justify-content: space-between; align-items: center; border-bottom: none; padding: 0.5rem 1rem; }
+    tbody td::before { content: attr(data-label); font-size: 0.72rem; text-transform: uppercase; color: var(--ink-soft); }
+    td.actions { justify-content: flex-end; }
+    td.actions::before { content: none; }
+    .panel-header { flex-direction: column; align-items: stretch; }
+    #search { width: 100%; max-width: none; }
+  }
+
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
 <body>
+
+<header>
+  <h1>Reorder Coverage</h1>
+  <div class="subtitle">Basement Inventory — days of stock to keep on hand per SKU when reordering from suppliers</div>
+</header>
+
 <main>
-  <header>
-    <h1>Bigfoot Bites</h1>
-    <div class="subtitle">Operator tools</div>
-  </header>
+  <section class="panel">
+    <div class="panel-header">
+      <h2>SKUs</h2>
+      <input type="text" id="search" placeholder="Search product name or UPC…">
+    </div>
 
-  <section class="category">
-    <h2 class="category-title">Inventory</h2>
-    <div class="tools">
-      <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/basement-inventory/">
-        <div class="tool-name">Basement Inventory</div>
-        <div class="tool-desc">Scan items in and out, work a pick list.</div>
-      </a>
-      <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/basement-inventory/upc-aliases.html">
-        <div class="tool-name">UPC Aliases</div>
-        <div class="tool-desc">Fix UPC mismatches between systems so pick lists and inventory stay in sync.</div>
-      </a>
-      <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/basement-inventory/reorder-coverage/">
-        <div class="tool-name">Reorder Coverage</div>
-        <div class="tool-desc">Set how many days of stock each SKU should hold before the basement reorders from suppliers.</div>
-      </a>
+    <table id="coverage-table" style="display:none;">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Pick Category</th>
+          <th>UPC</th>
+          <th class="num" style="min-width:130px;">Reorder Coverage</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="coverage-body"></tbody>
+    </table>
+
+    <div class="empty-state" id="empty-state" style="display:none;">
+      <strong>No matching SKUs</strong>
+      Try a different search term, or clear the search to see everything.
     </div>
   </section>
 
-  <section class="category">
-    <h2 class="category-title">Finance</h2>
-    <div class="tools">
-      <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/tax-obligations/">
-        <div class="tool-name">Tax &amp; Revenue Share Obligations</div>
-        <div class="tool-desc">Add, edit, and remove the state/county/city tax and revenue-share rows behind the weekly set-aside reminder.</div>
-      </a>
-    </div>
-  </section>
-
-  <section class="category">
-    <h2 class="category-title">Reporting</h2>
-    <div class="tools">
-      <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/reporting/report-contacts/">
-        <div class="tool-name">Report Contacts</div>
-        <div class="tool-desc">Manage who gets the monthly narrative and template reports per location — one primary, any number of CC.</div>
-      </a>
-      <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/reporting/report-config/">
-        <div class="tool-name">Report Section Config</div>
-        <div class="tool-desc">Turn report sections on or off per location, and set section options like comparison period and time-of-day bin count.</div>
-      </a>
-      <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/reporting/list/">
-        <div class="tool-name">Monthly Reports</div>
-        <div class="tool-desc">Manage creation and dissemination of monthly reports.</div>
-      </a>
-    </div>
-  </section>
-
-  <section class="category">
-    <h2 class="category-title">Operations</h2>
-    <div class="tools">
-      <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/operations/">
-        <div class="tool-name">Operations</div>
-        <div class="tool-desc">On-demand triggers for scheduled workflows — starts with ADM restock.</div>
-      </a>
-    </div>
-  </section>
+  <div id="status-line"></div>
 </main>
+
+<script src="/shared/config.js"></script>
+<script>
+  // Single endpoint: GET to read all SKUs, POST { upc, reorder_coverage_days }
+  // to update one. No create/delete here — Add Product owns row creation
+  // and defaults new SKUs to the 21-day system default already.
+  const API_BASE = 'https://randysmith42.app.n8n.cloud/webhook/reorder-coverage';
+
+  const DEFAULT_DAYS = 21;
+
+  let rows = [];
+  let filtered = [];
+  let editingUpc = null;
+  let searchTerm = '';
+
+  const tableEl = document.getElementById('coverage-table');
+  const bodyEl = document.getElementById('coverage-body');
+  const emptyEl = document.getElementById('empty-state');
+  const statusEl = document.getElementById('status-line');
+  const searchEl = document.getElementById('search');
+
+  function setStatus(message, isError) {
+    statusEl.textContent = message || '';
+    statusEl.className = isError ? 'error' : '';
+  }
+
+  async function loadRows() {
+    setStatus('Loading…');
+    try {
+      const res = await fetch(API_BASE, { method: 'GET', headers: { 'X-API-Key': API_KEY } });
+      if (!res.ok) throw new Error('Server returned ' + res.status);
+      rows = await res.json();
+      rows.sort((a, b) => a.product_name.localeCompare(b.product_name));
+      applyFilter();
+      setStatus('');
+    } catch (err) {
+      setStatus('Could not load SKUs — ' + err.message, true);
+    }
+  }
+
+  function applyFilter() {
+    const term = searchTerm.trim().toLowerCase();
+    filtered = !term
+      ? rows
+      : rows.filter(r =>
+          r.product_name.toLowerCase().includes(term) ||
+          r.upc.includes(term)
+        );
+    render();
+  }
+
+  searchEl.addEventListener('input', (e) => {
+    searchTerm = e.target.value;
+    applyFilter();
+  });
+
+  function render() {
+    if (!filtered.length) {
+      tableEl.style.display = 'none';
+      emptyEl.style.display = 'block';
+      return;
+    }
+    tableEl.style.display = 'table';
+    emptyEl.style.display = 'none';
+    bodyEl.innerHTML = '';
+
+    filtered.forEach(row => {
+      const tr = document.createElement('tr');
+      if (editingUpc === row.upc) {
+        tr.classList.add('editing');
+        tr.appendChild(td('Product', row.product_name));
+        tr.appendChild(td('Pick Category', row.pick_category || '—'));
+        tr.appendChild(td('UPC', row.upc));
+        tr.appendChild(editableCoverageCell(row));
+        tr.appendChild(editActionsCell(row));
+      } else {
+        tr.appendChild(td('Product', row.product_name));
+        tr.appendChild(td('Pick Category', row.pick_category || '—'));
+        tr.appendChild(td('UPC', row.upc));
+        tr.appendChild(viewCoverageCell(row));
+        tr.appendChild(viewActionsCell(row));
+      }
+      bodyEl.appendChild(tr);
+    });
+  }
+
+  function td(label, text) {
+    const cell = document.createElement('td');
+    cell.dataset.label = label;
+    cell.textContent = text;
+    return cell;
+  }
+
+  function viewCoverageCell(row) {
+    const cell = document.createElement('td');
+    cell.dataset.label = 'Reorder Coverage';
+    cell.className = 'num';
+    const span = document.createElement('span');
+    span.className = 'coverage-value';
+    span.textContent = row.reorder_coverage_days + ' days';
+    cell.appendChild(span);
+    return cell;
+  }
+
+  function editableCoverageCell(row) {
+    const cell = document.createElement('td');
+    cell.dataset.label = 'Reorder Coverage';
+    cell.className = 'num';
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.step = '1';
+    input.className = 'coverage-input';
+    input.id = 'edit-coverage-' + row.upc;
+    input.value = row.reorder_coverage_days;
+    cell.appendChild(input);
+    return cell;
+  }
+
+  function viewActionsCell(row) {
+    const cell = document.createElement('td');
+    cell.className = 'actions';
+    const editBtn = document.createElement('button');
+    editBtn.className = 'btn-quiet';
+    editBtn.textContent = 'Edit';
+    editBtn.onclick = () => { editingUpc = row.upc; render(); };
+    cell.appendChild(editBtn);
+    return cell;
+  }
+
+  function editActionsCell(row) {
+    const cell = document.createElement('td');
+    cell.className = 'actions';
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'btn-primary';
+    saveBtn.textContent = 'Save';
+    saveBtn.onclick = () => saveRow(row);
+    const cancelBtn = document.createElement('button');
+    cancelBtn.className = 'btn-quiet';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.onclick = () => { editingUpc = null; render(); };
+    cell.appendChild(saveBtn);
+    cell.appendChild(cancelBtn);
+    return cell;
+  }
+
+  async function saveRow(row) {
+    const input = document.getElementById('edit-coverage-' + row.upc);
+    const raw = input.value.trim();
+
+    // Read the raw string ourselves rather than trusting the number
+    // input's own value/coercion — some browsers silently clamp or
+    // blank an out-of-range value on blur (which fires right before
+    // this click handler runs), which would let a bad value slip
+    // past a check that only looked at input.valueAsNumber.
+    const isWholeNumber = /^-?\d+$/.test(raw);
+    const value = isWholeNumber ? parseInt(raw, 10) : NaN;
+
+    if (raw === '' || !isWholeNumber || value <= 0) {
+      input.classList.add('invalid');
+      setStatus('Reorder coverage must be a whole number greater than zero.', true);
+      return;
+    }
+    input.classList.remove('invalid');
+
+    setStatus('Saving…');
+    try {
+      const res = await fetch(API_BASE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
+        body: JSON.stringify({ upc: row.upc, reorder_coverage_days: value })
+      });
+      const body = await res.json();
+      if (!res.ok) {
+        const detail = (body && (body.details || body.error)) || ('Server returned ' + res.status);
+        throw new Error(Array.isArray(detail) ? detail.join(' ') : detail);
+      }
+      editingUpc = null;
+      await loadRows();
+      setStatus('Saved.');
+    } catch (err) {
+      setStatus('Could not save — ' + err.message, true);
+    }
+  }
+
+  loadRows();
+</script>
 </body>
 </html>
