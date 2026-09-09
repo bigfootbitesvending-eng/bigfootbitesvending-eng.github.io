@@ -41,6 +41,23 @@
     letter-spacing: -0.01em;
   }
   .subtitle { color: var(--ink-soft); font-size: 0.9rem; }
+  section.category {
+    margin-bottom: 2rem;
+  }
+  section.category:last-of-type {
+    margin-bottom: 0;
+  }
+  h2.category-title {
+    font-family: 'Roboto Slab', serif;
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    margin: 0 0 0.75rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--rule);
+  }
   .tools { display: flex; flex-direction: column; gap: 0.9rem; }
   a.tool-card {
     display: block;
@@ -71,32 +88,58 @@
     <h1>Bigfoot Bites</h1>
     <div class="subtitle">Operator tools</div>
   </header>
-  <div class="tools">
-    <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/basement-inventory/">
-      <div class="tool-name">Basement Inventory</div>
-      <div class="tool-desc">Scan items in and out, work a pick list.</div>
-    </a>
-    <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/basement-inventory/upc-aliases.html">
-      <div class="tool-name">UPC Aliases</div>
-      <div class="tool-desc">Fix UPC mismatches between systems so pick lists and inventory stay in sync.</div>
-    </a>
-    <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/tax-obligations/">
-      <div class="tool-name">Tax &amp; Revenue Share Obligations</div>
-      <div class="tool-desc">Add, edit, and remove the state/county/city tax and revenue-share rows behind the weekly set-aside reminder.</div>
-    </a>
-    <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/reporting/report-contacts/">
-      <div class="tool-name">Report Contacts</div>
-      <div class="tool-desc">Manage who gets the monthly narrative and template reports per location — one primary, any number of CC.</div>
-    </a>
-    <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/reporting/report-config/">
-      <div class="tool-name">Report Section Config</div>
-      <div class="tool-desc">Turn report sections on or off per location, and set section options like comparison period and time-of-day bin count.</div>
-    </a>
-    <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/reporting/list/">
-      <div class="tool-name">Monthly Reports</div>
-      <div class="tool-desc">Manage creation and dissemination of monthly reports.</div>
-    </a>
-  </div>
+
+  <section class="category">
+    <h2 class="category-title">Inventory</h2>
+    <div class="tools">
+      <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/basement-inventory/">
+        <div class="tool-name">Basement Inventory</div>
+        <div class="tool-desc">Scan items in and out, work a pick list.</div>
+      </a>
+      <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/basement-inventory/upc-aliases.html">
+        <div class="tool-name">UPC Aliases</div>
+        <div class="tool-desc">Fix UPC mismatches between systems so pick lists and inventory stay in sync.</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="category">
+    <h2 class="category-title">Finance</h2>
+    <div class="tools">
+      <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/tax-obligations/">
+        <div class="tool-name">Tax &amp; Revenue Share Obligations</div>
+        <div class="tool-desc">Add, edit, and remove the state/county/city tax and revenue-share rows behind the weekly set-aside reminder.</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="category">
+    <h2 class="category-title">Reporting</h2>
+    <div class="tools">
+      <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/reporting/report-contacts/">
+        <div class="tool-name">Report Contacts</div>
+        <div class="tool-desc">Manage who gets the monthly narrative and template reports per location — one primary, any number of CC.</div>
+      </a>
+      <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/reporting/report-config/">
+        <div class="tool-name">Report Section Config</div>
+        <div class="tool-desc">Turn report sections on or off per location, and set section options like comparison period and time-of-day bin count.</div>
+      </a>
+      <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/reporting/list/">
+        <div class="tool-name">Monthly Reports</div>
+        <div class="tool-desc">Manage creation and dissemination of monthly reports.</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="category">
+    <h2 class="category-title">Operations</h2>
+    <div class="tools">
+      <a class="tool-card" href="https://bigfootbitesvending-eng.github.io/operations/">
+        <div class="tool-name">Operations</div>
+        <div class="tool-desc">On-demand triggers for scheduled workflows — starts with ADM restock.</div>
+      </a>
+    </div>
+  </section>
 </main>
 </body>
 </html>
