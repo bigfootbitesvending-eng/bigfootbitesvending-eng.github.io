@@ -23,6 +23,7 @@
      report status today, plausibly order/procurement status later) */
   --status-not-started: #B8B2A5;
   --status-draft: #C98A2C;
+  --status-draft-soft: #FAF0DE;
   --status-sent: #2F6F5E;
   --status-error: #B23B3B;
   --status-error-soft: #FBEAEA;
