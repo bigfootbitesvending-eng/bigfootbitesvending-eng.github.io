@@ -28,6 +28,11 @@
   --status-error: #B23B3B;
   --status-error-soft: #FBEAEA;
 
+  /* Destructive actions and inactive states, used by the table tools */
+  --danger: #B3492D;
+  --danger-soft: #F5E4DE;
+  --inactive: #9A8F7D;
+
   /* Typography */
   --font-display: 'Roboto Slab', serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;

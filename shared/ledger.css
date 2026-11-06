@@ -1,0 +1,19 @@
+/* ============================================================
+   Bigfoot Bites: the shared look of the Ledger pages (docs/style-guide.md). Load after
+   /shared/styles.css and /shared/components.css. A page's own <style> still wins.
+   ============================================================ */
+
+header { margin-bottom: 2rem; border-bottom: 2px solid var(--ink); padding-bottom: 1rem; }
+h1 { font-family: 'Roboto Slab', serif; font-weight: 700; font-size: 1.6rem; margin: 0 0 0.25rem; letter-spacing: -0.01em; }
+.subtitle { color: var(--ink-soft); font-size: 0.9rem; }
+.tools { display: flex; flex-direction: column; gap: 0.9rem; }
+a.tool-card:hover { background: var(--ledger-green-soft); }
+.tool-name { font-family: 'Roboto Slab', serif; font-weight: 700; font-size: 1.05rem; margin-bottom: 0.3rem; }
+.tool-desc { font-size: 0.88rem; color: var(--ink-soft); }
+.back-link { display: inline-block; margin-bottom: 1rem; font-size: 0.85rem; color: var(--ink-soft); text-decoration: none; }
+.back-link:hover { color: var(--ledger-green); text-decoration: underline; }
+.back-link:focus-visible { outline: 2px solid var(--ledger-green); outline-offset: 2px; }
+.breadcrumb:hover { color: var(--ledger-green); }
+.breadcrumb:focus-visible { outline: 2px solid var(--ledger-green); outline-offset: 2px; }
+.chip-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+.chip[aria-pressed="true"] { background: var(--ledger-green); border-color: var(--ledger-green); color: #fff; }
