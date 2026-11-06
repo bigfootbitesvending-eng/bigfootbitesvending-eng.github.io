@@ -1,0 +1,31 @@
+/* ============================================================
+   Bigfoot Bites: shared components. Load after /shared/styles.css
+   on pages that use it. Colors fall back to their values so the
+   older pages, which don't load the tokens yet, still look right.
+   ============================================================ */
+
+html { scroll-padding-top: 5rem; }
+
+/* The message line (/shared/messages.js) */
+#bb-message {
+  position: sticky; top: 0; z-index: 30;
+  display: flex; align-items: flex-start; flex-wrap: wrap; gap: 0.25rem 0.75rem;
+  margin: 0 0 0.75rem; padding: 0.6rem 0.9rem;
+  border: 1px solid var(--rule, #D7D9D3); border-radius: 0 0 6px 6px;
+  background: #fff; color: var(--ink-soft, #52605B);
+  font-size: 0.9rem; line-height: 1.4; text-align: left;
+}
+#bb-message[hidden] { display: none; }
+#bb-message[data-kind="success"] { background: var(--ledger-green-soft, #E4EEEA); border-color: var(--ledger-green, #2F6F5E); color: #1F4A3E; }
+#bb-message[data-kind="error"] { background: var(--status-error-soft, #FBEAEA); border-color: var(--status-error, #B23B3B); color: #7A2E18; }
+body > #bb-message { max-width: 900px; margin: 0 auto 0.75rem; }
+#bb-message-text { flex: 1 1 12rem; min-width: 0; align-self: center; overflow-wrap: anywhere; white-space: pre-line; }
+#bb-message-text em { font-size: 0.8rem; }
+#bb-message button {
+  flex: 0 0 auto; min-height: 44px; padding: 0 0.3rem;
+  background: none; border: none; color: inherit;
+  font-family: inherit; font-size: 0.85rem; font-weight: 600; text-decoration: underline; cursor: pointer;
+}
+#bb-message button[hidden] { display: none; }
+#bb-message button[aria-disabled="true"] { opacity: 0.55; cursor: default; }
+#bb-message button:focus-visible { outline: 2px solid var(--ledger-green, #2F6F5E); outline-offset: 2px; }
